@@ -79,6 +79,14 @@ jobs:
       - name: Build rootfs
         run: ${{ github.workspace }}/runtime/eng/common/cross/build-rootfs.sh ${{ matrix.dotnet_arch }} ${{ matrix.dotnet_os }}
 
+      - name: Patch Directory.Build.targets to fix MSBuild static method invocation
+        run: |
+          # Replace invalid [MSBuild]::Add with valid System.Int32::Parse and arithmetic
+          TARGETS_FILE="${{ github.workspace }}/runtime/Directory.Build.targets"
+          if [ -f "$TARGETS_FILE" ]; then
+            sed -i "44s|\[MSBuild\]::Add('\$(NETCoreAppMaximumVersion.Split('.\')[0])', '1')|([System.Int32]::Parse(\$(NETCoreAppMaximumVersion.Split('.')[0])) + 1)|" "$TARGETS_FILE"
+          fi
+
       - name: Add Directory.Build.props to suppress NU1903
         run: |
           mkdir -p ${{ github.workspace }}/runtime/src/coreclr/tools/r2rtest
