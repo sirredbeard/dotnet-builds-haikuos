@@ -95,6 +95,9 @@ jobs:
             /p:OfficialBuildId=${{ steps.buildid.outputs.buildid }} \
             /p:UseRidGraph=true \
             /p:BundledRuntimeIdentifierGraphFile=${{ github.workspace }}/runtime/src/libraries/Microsoft.NETCore.Platforms/src/runtime.json
+            /p:NoWarn=NU1903 \
+            /p:TreatWarningsAsErrors=false \
+            /p:AllowUnsafePackageInRestore=true
 
       - name: Determine .NET version
         id: version
