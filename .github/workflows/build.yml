@@ -114,6 +114,8 @@ jobs:
             -c ${{ matrix.dotnet_configuration }} \
             -arch ${{ matrix.dotnet_arch }} \
             -os ${{ matrix.dotnet_os }} -cross -gcc \
+            -cmakeargs "-DCMAKE_SYSTEM_NAME=Haiku" \
+            -cmakeargs "-DNO_DARWIN=1" \
             /p:OfficialBuildId=${{ steps.buildid.outputs.buildid }} \
             /p:UseRidGraph=true \
             /p:BundledRuntimeIdentifierGraphFile=${{ github.workspace }}/runtime/src/libraries/Microsoft.NETCore.Platforms/src/runtime.json
