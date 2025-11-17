@@ -79,6 +79,19 @@ jobs:
       - name: Build rootfs
         run: ${{ github.workspace }}/runtime/eng/common/cross/build-rootfs.sh ${{ matrix.dotnet_arch }} ${{ matrix.dotnet_os }}
 
+      - name: Add Directory.Build.props to suppress NU1903
+        run: |
+          mkdir -p ${{ github.workspace }}/runtime/src/coreclr/tools/r2rtest
+          cat <<EOF > ${{ github.workspace }}/runtime/src/coreclr/tools/r2rtest/Directory.Build.props
+          <Project>
+            <PropertyGroup>
+              <NoWarn>NU1903</NoWarn>
+              <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+              <AllowUnsafePackageInRestore>true</AllowUnsafePackageInRestore>
+            </PropertyGroup>
+          </Project>
+          EOF
+
       - name: Build .NET Runtime
         run: |
           # The two properties, UseRidGraph and BundledRuntimeIdentifierGraphFile, are required after dotnet/runtime#90695.
