@@ -26,10 +26,10 @@ jobs:
   build:
     strategy:
       matrix:
-        dotnet_major_version: [8, 9, 10]
+        dotnet_major_version: [8, 10]
         dotnet_arch: [x64]
         dotnet_os: [haiku]
-        dotnet_configuration: [Debug, Release]
+        dotnet_configuration: [Release]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
