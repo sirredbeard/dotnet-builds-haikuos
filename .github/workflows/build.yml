@@ -78,6 +78,10 @@ jobs:
       - name: Build rootfs
         run: ${{ github.workspace }}/runtime/eng/common/cross/build-rootfs.sh ${{ matrix.dotnet_arch }} ${{ matrix.dotnet_os }}
 
+      - name: Patch UnwindCursor.hpp to exclude Darwin-only header
+        run: |
+          awk '{if ($0 ~ /#include <commpage_defs.h>/) {print "#if defined(__APPLE__)"; print "#include <commpage_defs.h>"; print "#endif"} else {print $0}}' ${{ github.workspace }}/runtime/src/native/external/llvm-libunwind/src/UnwindCursor.hpp > ${{ github.workspace }}/runtime/src/native/external/llvm-libunwind/src/UnwindCursor.hpp.tmp && mv ${{ github.workspace }}/runtime/src/native/external/llvm-libunwind/src/UnwindCursor.hpp.tmp ${{ github.workspace }}/runtime/src/native/external/llvm-libunwind/src/UnwindCursor.hpp
+        
       - name: Patch Directory.Build.targets to fix MSBuild static method invocation
         run: |
           # Replace invalid [MSBuild]::Add with valid System.Int32::Parse and arithmetic
